@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MailSender"
         xmlns:ctFileAttachment="clr-namespace:MailSender.Controls.FileAttachment"
     
-       
+        
         xmlns:converter="clr-namespace:MailSender.Converters"
         xmlns:vm="clr-namespace:MailSender.ViewModel"
         mc:Ignorable="d"
