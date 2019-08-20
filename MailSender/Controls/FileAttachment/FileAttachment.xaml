@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="MailSender.Controls.FileAttachment.FileAttachment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MailSender.Controls.FileAttachment"            
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+              DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Name="fileAttachmentUC"
+             >
+    <Grid>
+        <WrapPanel DataContext="{Binding ElementName=fileAttachmentUC,Path=DataContext,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" x:Name="wrapPanel">
+            <!--<ItemsControl ItemsSource="{Binding ItemSource,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                
+            </ItemsControl>-->
+        </WrapPanel>
+    </Grid>
+</UserControl>

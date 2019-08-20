@@ -1,0 +1,116 @@
+﻿<Window x:Class="MailSender.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MailSender"
+        xmlns:ctFileAttachment="clr-namespace:MailSender.Controls.FileAttachment"
+    
+       
+        xmlns:converter="clr-namespace:MailSender.Converters"
+        xmlns:vm="clr-namespace:MailSender.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <!--view model-->
+        <vm:MainWindowViewModel x:Key="vmMainWindow"/>
+        <!--converters-->
+        <converter:FlowDocumentToXamlConverter x:Key="flowDocumentConverter"/>
+        <!--style TextBlock-->
+        <Style TargetType="TextBlock" x:Key="styleTextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="#1EB367"/>
+            <Setter Property="FontFamily" Value="Sans-serif"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <!--style TextBox-->
+        <Style TargetType="TextBox" x:Key="styleTextBox">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        
+        <!--style Button-->
+        <Style TargetType="Button" x:Key="styleButton">
+            <Setter Property="Background" Value="#1EB367"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+       
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            
+        </Grid.ColumnDefinitions>
+        <Grid.Children>
+            <!--Subgrid layout definitions-->
+            <Grid Grid.Row="0" Grid.Column="0"  >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                   
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--Subgrid Elements-->
+                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="imgs/send_48x48.png" Stretch="Uniform" Height="32"/>
+                        <TextBlock Text="SEND" VerticalAlignment="Center" FontSize="20" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="To: " Style="{StaticResource styleTextBlock}"/>
+                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailAddresses,Source={StaticResource vmMainWindow}}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Subject: " Style="{StaticResource styleTextBlock}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailSubject,Source={StaticResource vmMainWindow}}"/>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                  
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Style="{StaticResource styleButton}" Command="{Binding CommandAddFileAttachment,Source={StaticResource vmMainWindow}}" Height="30" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="imgs/attachment_32x32.png" Stretch="Uniform" Height="24"/>
+                        <TextBlock Text="File attachment" VerticalAlignment="Center" FontSize="16" Foreground="White" Margin="4"/>
+                    </StackPanel>
+                </Button>
+                <ctFileAttachment:FileAttachment Grid.Row="0" Grid.Column="1" 
+                                        DataContext="{StaticResource vmMainWindow}" 
+                                        ItemSource="{Binding FilesAttachment,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        IsReset="{Binding AllowReset,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <!--<RichTextBox Grid.Row="2" Margin="4" />-->
+            <!--<ctRichTextBox:FsRichTextBox Grid.Row="2" Margin="4"
+                                         ToolbarBackground="#FF1DA5B8" ToolbarBorderBrush="#FF6582B6" ToolbarBorderThickness="1,1,1,0" CodeControlsVisibility="Collapsed"
+                                         Document="{Binding DocumentXaml,Source={StaticResource vmMainWindow},Mode=TwoWay,Converter={StaticResource flowDocumentConverter},UpdateSourceTrigger=PropertyChanged}"
+                                         />-->
+           
+            <TextBox Grid.Row="3" Text="{Binding DocumentXaml,Source={StaticResource vmMainWindow}}"  Margin="10,5,10,10"  Background="Gainsboro" TextWrapping="Wrap">
+
+            </TextBox>
+        </Grid.Children>
+    </Grid>
+</Window>
