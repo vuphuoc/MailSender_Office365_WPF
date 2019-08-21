@@ -1,13 +1,16 @@
 ﻿using MailSender.Helpers;
 using MailSender.Model;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MailSender.ViewModel
@@ -79,7 +82,25 @@ namespace MailSender.ViewModel
 
         private void AddFileAttachment(object obj)
         {
-            FilesAttachment.Add(new FileAttachmentModel() { FileName = "TrackA", FilePath = "D:\trackA.png" });
+            //FilesAttachment.Add(new FileAttachmentModel() { FileName = "TrackA", FilePath = "D:\trackA.png" });
+            using (System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                if(fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var size = new FileInfo(fileDialog.FileName).Length;
+                    long mb = size / (1024 * 1024);
+                    if (mb > 30)
+                    {
+                        MessageBox.Show("Your file is greater than 30MB, file must be less 30MB!", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+                    else
+                    {
+                        FilesAttachment.Add(new FileAttachmentModel() { FileName = System.IO.Path.GetFileName(fileDialog.FileName), FilePath=fileDialog.FileName });
+                    }
+                   
+                }
+            }
             AllowReset = true;
         }
 
@@ -96,9 +117,8 @@ namespace MailSender.ViewModel
 
         private void SendMail(object obj)
         {
-            //SubViewModel subViewModel = new SubViewModel(this);
-            //subViewModel.GetDocumentXaml();
-            SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml);
+            
+            SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml,FilesAttachment.Select(f=>f.FilePath).ToArray());
         }
         #endregion
 
@@ -126,7 +146,7 @@ namespace MailSender.ViewModel
         public MainWindowViewModel()
         {
             FilesAttachment = new ObservableCollection<FileAttachmentModel>();
-            PrepareData();
+            //PrepareData();
             AllowReset = false;
             
         }

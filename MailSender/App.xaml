@@ -8,16 +8,22 @@
         <Style TargetType="StackPanel" x:Key="stackFileItem">
             <Setter Property="Background" Value="#88B5D9"/>
             <Setter Property="Margin" Value="4"/>
+            <Setter Property="Height" Value="30"/>
+          
             <Style.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Margin" Value="4"/>
-                    <Setter Property="Padding" Value="4"/>
+                    <Setter Property="Padding" Value="2"/>
                     <Setter Property="FontSize" Value="12"/>
-    
+                    <Setter Property="MaxWidth" Value="100"/>
                 </Style>
                 <Style TargetType="Button">
                     <Setter Property="FontSize" Value="12"/>
                     <Setter Property="Width" Value="20"/>
+                    <Setter Property="Background" Value="#D8FCFCFC"/>
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="BorderBrush" Value="#D8FCFCFC"/>
+                    <Setter Property="BorderThickness" Value="0"/>
                 </Style>
             </Style.Resources>
         </Style>

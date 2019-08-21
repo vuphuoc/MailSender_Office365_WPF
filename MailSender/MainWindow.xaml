@@ -5,22 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MailSender"
         xmlns:ctFileAttachment="clr-namespace:MailSender.Controls.FileAttachment"
-    
-        
-        xmlns:converter="clr-namespace:MailSender.Converters"
+        xmlns:xttk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:ctl="clr-namespace:MailSender.Controls.RtbEditor"     
+        xmlns:rtbEditor="clr-namespace:WpfRichText.Ex.Controls;assembly=WpfRichText.Ex"
         xmlns:vm="clr-namespace:MailSender.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MailSender" Height="450" Width="800"
+        Icon="imgs/send.png"
+        >
     <Window.Resources>
         <!--view model-->
         <vm:MainWindowViewModel x:Key="vmMainWindow"/>
-        <!--converters-->
-        <converter:FlowDocumentToXamlConverter x:Key="flowDocumentConverter"/>
+      
         <!--style TextBlock-->
         <Style TargetType="TextBlock" x:Key="styleTextBlock">
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Margin" Value="4"/>
-            <Setter Property="Background" Value="#1EB367"/>
+            <Setter Property="Background" Value="#366CCB"/>
             <Setter Property="FontFamily" Value="Sans-serif"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="4"/>
@@ -30,7 +31,7 @@
         <!--style TextBox-->
         <Style TargetType="TextBox" x:Key="styleTextBox">
             <Setter Property="Margin" Value="4"/>
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="16"/>
         </Style>
         
         <!--style Button-->
@@ -38,6 +39,8 @@
             <Setter Property="Background" Value="#1EB367"/>
             <Setter Property="Margin" Value="4"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="#1EB367"/>
+            <Setter Property="BorderThickness" Value="1"/>
         </Style>
         
        
@@ -47,7 +50,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -67,7 +70,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--Subgrid Elements-->
-                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}">
+                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="imgs/send_48x48.png" Stretch="Uniform" Height="32"/>
                         <TextBlock Text="SEND" VerticalAlignment="Center" FontSize="20" Foreground="White"/>
@@ -102,13 +105,12 @@
                                         IsReset="{Binding AllowReset,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
-            <!--<RichTextBox Grid.Row="2" Margin="4" />-->
-            <!--<ctRichTextBox:FsRichTextBox Grid.Row="2" Margin="4"
-                                         ToolbarBackground="#FF1DA5B8" ToolbarBorderBrush="#FF6582B6" ToolbarBorderThickness="1,1,1,0" CodeControlsVisibility="Collapsed"
-                                         Document="{Binding DocumentXaml,Source={StaticResource vmMainWindow},Mode=TwoWay,Converter={StaticResource flowDocumentConverter},UpdateSourceTrigger=PropertyChanged}"
-                                         />-->
+          
+
            
-            <TextBox Grid.Row="3" Text="{Binding DocumentXaml,Source={StaticResource vmMainWindow}}"  Margin="10,5,10,10"  Background="Gainsboro" TextWrapping="Wrap">
+            <!--<ctl:RichTBEditor Grid.Row="2" Margin="4" Text="{Binding DocumentXaml,Mode=TwoWay,Source={StaticResource vmMainWindow}}"/>-->
+            <rtbEditor:RichTextEditor Grid.Row="2" Margin="4" Text="{Binding DocumentXaml,Mode=TwoWay,Source={StaticResource vmMainWindow}}"/>
+            <TextBox Grid.Row="3" Text="{Binding DocumentXaml,Source={StaticResource vmMainWindow}}" Visibility="Collapsed"  Margin="10,5,10,10"  Background="Gainsboro" TextWrapping="Wrap">
 
             </TextBox>
         </Grid.Children>

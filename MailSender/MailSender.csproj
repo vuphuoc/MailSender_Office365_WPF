@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>send_RWy_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
@@ -43,6 +46,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +59,24 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfRichText.Ex">
+      <HintPath>C:\Users\thienphuoc\Downloads\WpfRichText.Ex-master\WpfRichText.Ex-master\WpfRichText.Ex\bin\Debug\WpfRichText.Ex.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -64,6 +86,20 @@
     <Compile Include="Controls\RichTextBoxEditor\FsRichTextBox.xaml.cs">
       <DependentUpon>FsRichTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RichTextBoxEditor\RTBEditor.xaml.cs">
+      <DependentUpon>RTBEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlCssParser.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlFromXamlConverter.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlLexicalAnalyzer.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlParser.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlSchema.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlTokenType.cs" />
+    <Compile Include="Controls\RtbEditor\HtmlParser\HtmlToXamlConverter.cs" />
+    <Compile Include="Controls\RtbEditor\RichTBEditor.xaml.cs">
+      <DependentUpon>RichTBEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RtbEditor\RichTextboxAssistant.cs" />
     <Compile Include="Converters\FlowDocumentToXamlConverter.cs" />
     <Compile Include="Helpers\SPCMail.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
@@ -72,6 +108,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RichTextBoxEditor\FsRichTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RichTextBoxEditor\RTBEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RtbEditor\RichTBEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -153,6 +197,38 @@
     <Resource Include="Controls\RichTextBoxEditor\Images\listnumbers.png" />
     <Resource Include="Controls\RichTextBoxEditor\Images\normaltext.png" />
     <Resource Include="Controls\RichTextBoxEditor\Images\separator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Controls\RichTextBoxEditor\Images\bold_24x24.png" />
+    <Resource Include="Controls\RichTextBoxEditor\Images\italic_24x24.png" />
+    <Resource Include="Controls\RichTextBoxEditor\Images\open_24x24.png" />
+    <Resource Include="Controls\RichTextBoxEditor\Images\save_24x24.png" />
+    <Resource Include="Controls\RichTextBoxEditor\Images\underline_24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Controls\RtbEditor\Images\charactergrowfont.png" />
+    <Resource Include="Controls\RtbEditor\Images\charactershrinkfont.png" />
+    <Resource Include="Controls\RtbEditor\Images\editcopy.png" />
+    <Resource Include="Controls\RtbEditor\Images\editcut.png" />
+    <Resource Include="Controls\RtbEditor\Images\editpaste.png" />
+    <Resource Include="Controls\RtbEditor\Images\editredo.png" />
+    <Resource Include="Controls\RtbEditor\Images\editundo.png" />
+    <Resource Include="Controls\RtbEditor\Images\fileopen.png" />
+    <Resource Include="Controls\RtbEditor\Images\filesave.png" />
+    <Resource Include="Controls\RtbEditor\Images\listbullets.png" />
+    <Resource Include="Controls\RtbEditor\Images\listnumbering.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphcenterjustify.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphdecreaseindentation.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphfulljustify.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphincreaseindentation.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphleftjustify.png" />
+    <Resource Include="Controls\RtbEditor\Images\paragraphrightjustify.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="send_RWy_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\send.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,7 +19,7 @@ namespace MailSender.Helpers
             }
             set { instance = value; }
         }
-        public async void PrepareSPCMail(string fromEmail, string toAddress, string subject, string body)
+        public async void PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string[] filePathAttachments = null)
         {
             string[] mailAddresses = toAddress.Split(';');
             await Task.Run(() =>
@@ -28,6 +28,17 @@ namespace MailSender.Helpers
                 {
                     using (System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage())
                     {
+                        //prepare file attachment
+                        if(filePathAttachments != null)
+                        {
+                            foreach (var file in filePathAttachments)
+                            {
+                                Attachment at = new Attachment(file);
+                                myMail.Attachments.Add(at);
+                            }
+
+                        }
+
                         myMail.From = new MailAddress(fromEmail);
                         myMail.To.Add(address);
                         myMail.Subject = subject;
