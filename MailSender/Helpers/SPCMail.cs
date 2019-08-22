@@ -19,45 +19,57 @@ namespace MailSender.Helpers
             }
             set { instance = value; }
         }
-        public async void PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string[] filePathAttachments = null)
+        public async Task<int> PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string[] filePathAttachments = null)
         {
+
             string[] mailAddresses = toAddress.Split(';');
+            int result = 0;
             await Task.Run(() =>
             {
-                foreach (var address in mailAddresses)
+                try
                 {
-                    using (System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage())
+                    foreach (var address in mailAddresses)
                     {
-                        //prepare file attachment
-                        if(filePathAttachments != null)
+                        using (System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage())
                         {
-                            foreach (var file in filePathAttachments)
+                            //prepare file attachment
+                            if (filePathAttachments != null)
                             {
-                                Attachment at = new Attachment(file);
-                                myMail.Attachments.Add(at);
+                                foreach (var file in filePathAttachments)
+                                {
+                                    Attachment at = new Attachment(file);
+                                    myMail.Attachments.Add(at);
+                                }
+
                             }
 
-                        }
+                            myMail.From = new MailAddress(fromEmail);
+                            myMail.To.Add(address);
+                            myMail.Subject = subject;
+                            myMail.IsBodyHtml = true;
+                            myMail.Body = body;
+                            myMail.IsBodyHtml = true;
+                            using (System.Net.Mail.SmtpClient s = new System.Net.Mail.SmtpClient("mailnew.spclt.com.vn"))
+                            {
+                                //s.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                //s.UseDefaultCredentials = false;
+                                //s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), password);
+                                //s.EnableSsl = true;
 
-                        myMail.From = new MailAddress(fromEmail);
-                        myMail.To.Add(address);
-                        myMail.Subject = subject;
-                        myMail.IsBodyHtml = true;
-                        myMail.Body = body;
-                        myMail.IsBodyHtml = true;
-                        using (System.Net.Mail.SmtpClient s = new System.Net.Mail.SmtpClient("mailnew.spclt.com.vn"))
-                        {
-                            //s.DeliveryMethod = SmtpDeliveryMethod.Network;
-                            //s.UseDefaultCredentials = false;
-                            //s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), password);
-                            //s.EnableSsl = true;
-                            s.Send(myMail);
+                                s.Send(myMail);
+                            }
                         }
                     }
+                    result = 1;
                 }
+                catch (Exception ex)
+                {
+                    result = -1;
+                }
+              
 
             });
-           
+            return result;
 
             ////Send email
 

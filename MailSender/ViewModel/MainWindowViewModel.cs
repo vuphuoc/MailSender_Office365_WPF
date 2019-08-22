@@ -115,10 +115,21 @@ namespace MailSender.ViewModel
             }
         }
 
-        private void SendMail(object obj)
+        private async void SendMail(object obj)
         {
-            
-            SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml,FilesAttachment.Select(f=>f.FilePath).ToArray());
+            string message = "";
+            if (string.IsNullOrEmpty(MailAddresses) || string.IsNullOrEmpty(MailSubject))
+                message = "Please enter mail addresses and subject!";
+            else
+            {
+                int result = await SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml, FilesAttachment.Select(f => f.FilePath).ToArray());
+                if (result == -1)
+                    message = "Something went wrong, please check out mail addresses!";
+                else if (result == 1)
+                    message = "Mail(s) sent successfully!";
+                else message = "There is no mail sent!";
+            }
+            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         #endregion
 
