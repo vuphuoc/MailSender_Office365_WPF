@@ -78,7 +78,7 @@
                 </Button>
 
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="To: " Style="{StaticResource styleTextBlock}"/>
-                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailAddresses,Source={StaticResource vmMainWindow}}"/>
+                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource styleTextBox}" DataContext="{StaticResource vmMainWindow}" Text="{Binding MailAddresses,ValidatesOnExceptions=True}" Validation.ErrorTemplate="{StaticResource errorTemplate}"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Subject: " Style="{StaticResource styleTextBlock}"/>
                 <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailSubject,Source={StaticResource vmMainWindow}}"/>

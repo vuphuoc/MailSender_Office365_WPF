@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ using System.Windows.Input;
 
 namespace MailSender.ViewModel
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    class MainWindowViewModel : ObservableObject
     {
 
         #region PROPERTY
@@ -43,14 +44,19 @@ namespace MailSender.ViewModel
             }
         }
 
-        //Email info
+        //Email info       
         string mailAddresses;
+       
+        //[StringLength(50, MinimumLength = 5, ErrorMessage = "Must be at least 5 characters.")]
+        [RegularExpression(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",ErrorMessage ="Email is not valid!")]
         public string MailAddresses
         {
             get { return mailAddresses; }
             set
             {
-                mailAddresses = value;
+                ValidateProperty(value, "MailAddresses");
+                //OnPropertyChanged(ref mailAddresses, value);
+                //mailAddresses = value;               
                 OnPropertyChanged("MailAddresses");
             }
         }
@@ -130,6 +136,7 @@ namespace MailSender.ViewModel
                 else message = "There is no mail sent!";
             }
             MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+            
         }
         #endregion
 
@@ -147,7 +154,13 @@ namespace MailSender.ViewModel
             return FilesAttachment;
         }
 
-      
+        private void ValidateProperty<T>(T value, string name)
+        {
+            Validator.ValidateProperty(value, new ValidationContext(this, null, null)
+            {
+                MemberName = name
+            });
+        }
 
         #endregion
 
@@ -172,11 +185,11 @@ namespace MailSender.ViewModel
 
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //public void OnPropertyChanged(string propName)
+        //{
+        //    if (PropertyChanged != null)
+        //        PropertyChanged(this, new PropertyChangedEventArgs(propName));
+        //}
     }
 }
