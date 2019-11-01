@@ -67,10 +67,11 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <!--Subgrid Elements-->
-                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}" >
+                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}" CommandParameter="{Binding ElementName=txtTo, Path=Text}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="imgs/send_48x48.png" Stretch="Uniform" Height="32"/>
                         <TextBlock Text="SEND" VerticalAlignment="Center" FontSize="20" Foreground="White"/>
@@ -78,7 +79,13 @@
                 </Button>
 
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="To: " Style="{StaticResource styleTextBlock}"/>
-                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource styleTextBox}" DataContext="{StaticResource vmMainWindow}" Text="{Binding MailAddresses,ValidatesOnExceptions=True}" Validation.ErrorTemplate="{StaticResource errorTemplate}"/>
+                <TextBox Grid.Row="0" Grid.Column="2" Name="txtTo" Style="{StaticResource styleTextBox}" Text="{Binding MailAddresses,Source={StaticResource vmMainWindow}}"/>
+                <Button Grid.Row="0" Grid.Column="3" Margin="0,4,4,4" Width="48"  Background="#1EB367" Command="{Binding CmdSaveDefaultMails,Source={StaticResource vmMainWindow}}" CommandParameter="{Binding ElementName=txtTo, Path=Text}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="imgs/mailAdd-32.png" Stretch="Uniform" Height="24"/>
+                        
+                    </StackPanel>
+                </Button>
 
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Subject: " Style="{StaticResource styleTextBlock}"/>
                 <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailSubject,Source={StaticResource vmMainWindow}}"/>

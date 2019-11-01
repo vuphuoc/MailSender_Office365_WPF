@@ -10,6 +10,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -48,15 +49,15 @@ namespace MailSender.ViewModel
         string mailAddresses;
        
         //[StringLength(50, MinimumLength = 5, ErrorMessage = "Must be at least 5 characters.")]
-        [RegularExpression(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",ErrorMessage ="Email is not valid!")]
+        //[RegularExpression(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",ErrorMessage ="Email is not valid!")]
         public string MailAddresses
         {
             get { return mailAddresses; }
             set
             {
-                ValidateProperty(value, "MailAddresses");
+                //ValidateProperty(value, "MailAddresses");
                 //OnPropertyChanged(ref mailAddresses, value);
-                //mailAddresses = value;               
+                mailAddresses = value;               
                 OnPropertyChanged("MailAddresses");
             }
         }
@@ -116,9 +117,26 @@ namespace MailSender.ViewModel
             get
             {
                 if (commandSendMail == null)
-                    commandSendMail = new RelayCommand<object>(SendMail);
+                    commandSendMail = new RelayCommand<object>(CanSendMail,SendMail);
                 return commandSendMail;
             }
+        }
+
+        private bool CanSendMail(object obj)
+        {
+            if (obj != null)
+            {
+                var pattern = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+                string mailInfo = obj as string;
+                string[] mails = mailInfo.Split(';');
+
+                var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
+                if (invalidMail)
+                    return false;
+                return true;
+            }
+            else
+                return false;
         }
 
         private async void SendMail(object obj)
@@ -136,6 +154,41 @@ namespace MailSender.ViewModel
                 else message = "There is no mail sent!";
             }
             MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+            
+        }
+
+        private ICommand commandSaveDefaultMails;
+        public ICommand CmdSaveDefaultMails
+        {
+            get
+            {
+                if (commandSaveDefaultMails == null)
+                    commandSaveDefaultMails = new RelayCommand<object>(CanSendMail, SaveDefaultMails);
+                return commandSaveDefaultMails;
+            }
+            private set
+            {
+                commandSaveDefaultMails = value;
+            }
+        }
+
+        private void SaveDefaultMails(object obj)
+        {
+            if(obj != null)
+            {
+                try
+                {
+                    string mails = obj as string;
+                    Properties.Settings.Default.defaultMails = mails;
+                    Properties.Settings.Default.Save();
+                    MessageBox.Show("Mail addresses have been saved!", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Something went wrong, please try again later!", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                
+            }
             
         }
         #endregion
@@ -172,6 +225,9 @@ namespace MailSender.ViewModel
             FilesAttachment = new ObservableCollection<FileAttachmentModel>();
             //PrepareData();
             AllowReset = false;
+
+            //load default mails 
+            MailAddresses = Properties.Settings.Default.defaultMails;
             
         }
 

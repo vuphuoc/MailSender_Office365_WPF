@@ -51,10 +51,10 @@ namespace MailSender.Helpers
                             myMail.IsBodyHtml = true;
                             using (System.Net.Mail.SmtpClient s = new System.Net.Mail.SmtpClient("mailnew.spclt.com.vn"))
                             {
-                                //s.DeliveryMethod = SmtpDeliveryMethod.Network;
-                                //s.UseDefaultCredentials = false;
-                                //s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), password);
-                                //s.EnableSsl = true;
+                                s.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                s.UseDefaultCredentials = false;
+                                s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), "UCpYm46k");
+                                s.EnableSsl = true;
 
                                 s.Send(myMail);
                             }
