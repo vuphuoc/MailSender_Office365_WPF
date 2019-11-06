@@ -117,6 +117,8 @@
     </Compile>
     <Compile Include="Controls\RtbEditor\RichTextboxAssistant.cs" />
     <Compile Include="Converters\FlowDocumentToXamlConverter.cs" />
+    <Compile Include="Helpers\MultiCommandBindingHelper.cs" />
+    <Compile Include="Helpers\MultiParamBindingHelper.cs" />
     <Compile Include="Helpers\ObservableObject.cs" />
     <Compile Include="Helpers\SPCMail.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

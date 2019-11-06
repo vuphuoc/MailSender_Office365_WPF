@@ -19,10 +19,16 @@ namespace MailSender.Helpers
             }
             set { instance = value; }
         }
-        public async Task<int> PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string[] filePathAttachments = null)
+        public async Task<int> PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string mailsCc, string[] filePathAttachments = null)
         {
 
             string[] mailAddresses = toAddress.Split(';');
+            List<string> _mailsCc = new List<string>();
+            if(!string.IsNullOrEmpty(mailsCc))
+            {
+                _mailsCc.AddRange(mailsCc.Split(';'));
+            }
+
             int result = 0;
             await Task.Run(() =>
             {
@@ -45,6 +51,14 @@ namespace MailSender.Helpers
 
                             myMail.From = new MailAddress(fromEmail);
                             myMail.To.Add(address);
+
+                            //add mails cc
+                            foreach (var mCc in _mailsCc)
+                            {
+                                myMail.CC.Add(new MailAddress(mCc));
+                            }
+
+
                             myMail.Subject = subject;
                             myMail.IsBodyHtml = true;
                             myMail.Body = body;

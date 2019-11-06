@@ -34,5 +34,17 @@ namespace MailSender.Properties {
                 this["defaultMails"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string defaultMailsCc {
+            get {
+                return ((string)(this["defaultMailsCc"]));
+            }
+            set {
+                this["defaultMailsCc"] = value;
+            }
+        }
     }
 }

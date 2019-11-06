@@ -73,6 +73,31 @@ namespace MailSender.ViewModel
             }
         }
 
+       
+        //2019-11-06 Start add: mail Cc
+        private string mailCc;
+        public string MailCc
+        {
+            get { return mailCc; }
+            set
+            {
+                mailCc = value;
+                OnPropertyChanged(nameof(MailCc));                
+            }
+        }
+
+        private bool checkMailCc;
+        public bool CheckMailCc
+        {
+            get { return checkMailCc; }
+            set
+            {
+                checkMailCc = value;
+                OnPropertyChanged(nameof(CheckMailCc));
+
+            }
+        }
+        //2019-11-06 End add
         #endregion
 
         #region COMMANDS and Event COMMAND
@@ -122,18 +147,42 @@ namespace MailSender.ViewModel
             }
         }
 
-        private bool CanSendMail(object obj)
+        private bool CanSendMail(object parameter)
         {
-            if (obj != null)
+            if (parameter != null)
             {
-                var pattern = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
-                string mailInfo = obj as string;
-                string[] mails = mailInfo.Split(';');
+                var values = parameter as object[];
 
+                var pattern = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+                string mailInfo = values[0] as string;
+                string mailCcInfo = values[1] as string;
+                string[] mails = mailInfo.Split(';');
                 var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
-                if (invalidMail)
-                    return false;
-                return true;
+
+                //2019-11-06 Start add: thêm mail cc
+                if (!string.IsNullOrEmpty(mailCcInfo))
+                {
+                    string[] mailsCc = mailCcInfo.Split(';');
+                    var invalidMailCc = mailsCc.Any(c => Regex.IsMatch(c, pattern) == false);
+                    if (invalidMail || invalidMailCc)
+                        return false;
+                    else return true;
+                }
+                else
+                {
+                    if (invalidMail)
+                        return false;
+                    return true;
+                }
+
+                //2019-11-06 End add
+
+                //2019-11-06 Start lock: kiểm tra cả mail được Cc
+                //var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
+                //if (invalidMail)
+                //    return false;
+                //return true;
+                //2019-11-06 End lock
             }
             else
                 return false;
@@ -146,7 +195,7 @@ namespace MailSender.ViewModel
                 message = "Please enter mail addresses and subject!";
             else
             {
-                int result = await SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml, FilesAttachment.Select(f => f.FilePath).ToArray());
+                int result = await SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml, MailCc, FilesAttachment.Select(f => f.FilePath).ToArray());
                 if (result == -1)
                     message = "Something went wrong, please check out mail addresses!";
                 else if (result == 1)
@@ -172,14 +221,18 @@ namespace MailSender.ViewModel
             }
         }
 
-        private void SaveDefaultMails(object obj)
+        private void SaveDefaultMails(object parameter)
         {
-            if(obj != null)
+            if(parameter != null)
             {
                 try
                 {
-                    string mails = obj as string;
+                    var values = parameter as object[];
+                    string mails = values[0] as string;
+                    string mailsCc = values[1] as string;
+
                     Properties.Settings.Default.defaultMails = mails;
+                    Properties.Settings.Default.defaultMailsCc = mailsCc;
                     Properties.Settings.Default.Save();
                     MessageBox.Show("Mail addresses have been saved!", "Message", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -228,6 +281,8 @@ namespace MailSender.ViewModel
 
             //load default mails 
             MailAddresses = Properties.Settings.Default.defaultMails;
+            //load defaul mails cc
+            MailCc = Properties.Settings.Default.defaultMailsCc;
             
         }
 

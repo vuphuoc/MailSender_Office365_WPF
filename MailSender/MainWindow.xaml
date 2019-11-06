@@ -9,14 +9,16 @@
         xmlns:ctl="clr-namespace:MailSender.Controls.RtbEditor"     
         xmlns:rtbEditor="clr-namespace:WpfRichText.Ex.Controls;assembly=WpfRichText.Ex"
         xmlns:vm="clr-namespace:MailSender.ViewModel"
+        xmlns:helpers="clr-namespace:MailSender.Helpers"
         mc:Ignorable="d"
-        Title="MailSender" Height="450" Width="800"
+        Title="MailSender v1.0.1" Height="450" Width="800"
         Icon="imgs/send.png"
         >
     <Window.Resources>
         <!--view model-->
         <vm:MainWindowViewModel x:Key="vmMainWindow"/>
-      
+        <!--multiBindingHelper-->
+        <helpers:MultiParamBindingHelper x:Key="multiCmdBinding"/>
         <!--style TextBlock-->
         <Style TargetType="TextBlock" x:Key="styleTextBlock">
             <Setter Property="FontSize" Value="20"/>
@@ -62,7 +64,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
-                   
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
@@ -71,7 +73,13 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <!--Subgrid Elements-->
-                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource styleButton}" Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}" CommandParameter="{Binding ElementName=txtTo, Path=Text}">
+                <Button Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Style="{StaticResource styleButton}"  Command="{Binding CommandSendMail,Source={StaticResource vmMainWindow}}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource multiCmdBinding}">
+                            <Binding ElementName="txtTo" Path="Text"/>
+                            <Binding ElementName="txtCc" Path="Text"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="imgs/send_48x48.png" Stretch="Uniform" Height="32"/>
                         <TextBlock Text="SEND" VerticalAlignment="Center" FontSize="20" Foreground="White"/>
@@ -80,15 +88,23 @@
 
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="To: " Style="{StaticResource styleTextBlock}"/>
                 <TextBox Grid.Row="0" Grid.Column="2" Name="txtTo" Style="{StaticResource styleTextBox}" Text="{Binding MailAddresses,Source={StaticResource vmMainWindow}}"/>
-                <Button Grid.Row="0" Grid.Column="3" Margin="0,4,4,4" Width="48"  Background="#1EB367" Command="{Binding CmdSaveDefaultMails,Source={StaticResource vmMainWindow}}" CommandParameter="{Binding ElementName=txtTo, Path=Text}">
+                <Button Grid.Row="0" Grid.Column="3" Margin="0,4,4,4" Width="48"  Background="#1EB367" Command="{Binding CmdSaveDefaultMails,Source={StaticResource vmMainWindow}}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource multiCmdBinding}">
+                            <Binding ElementName="txtTo" Path="Text"/>
+                            <Binding ElementName="txtCc" Path="Text"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="imgs/mailAdd-32.png" Stretch="Uniform" Height="24"/>
                         
                     </StackPanel>
                 </Button>
 
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="Subject: " Style="{StaticResource styleTextBlock}"/>
-                <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailSubject,Source={StaticResource vmMainWindow}}"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Cc: " Style="{StaticResource styleTextBlock}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Name="txtCc" Style="{StaticResource styleTextBox}" Text="{Binding MailCc,Source={StaticResource vmMainWindow}}"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Subject: " Style="{StaticResource styleTextBlock}"/>
+                <TextBox Grid.Row="2" Grid.Column="2" Style="{StaticResource styleTextBox}" Text="{Binding MailSubject,Source={StaticResource vmMainWindow}}"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="0" >
