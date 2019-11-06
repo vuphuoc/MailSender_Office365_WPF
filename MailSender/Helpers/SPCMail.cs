@@ -12,7 +12,8 @@ namespace MailSender.Helpers
         static SPCMail instance;
         public static SPCMail Instance
         {
-            get {
+            get
+            {
                 if (instance == null)
                     instance = new SPCMail();
                 return instance;
@@ -24,7 +25,7 @@ namespace MailSender.Helpers
 
             string[] mailAddresses = toAddress.Split(';');
             List<string> _mailsCc = new List<string>();
-            if(!string.IsNullOrEmpty(mailsCc))
+            if (!string.IsNullOrEmpty(mailsCc))
             {
                 _mailsCc.AddRange(mailsCc.Split(';'));
             }
@@ -34,44 +35,45 @@ namespace MailSender.Helpers
             {
                 try
                 {
-                    foreach (var address in mailAddresses)
+                    using (System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage())
                     {
-                        using (System.Net.Mail.MailMessage myMail = new System.Net.Mail.MailMessage())
-                        {
-                            //prepare file attachment
-                            if (filePathAttachments != null)
-                            {
-                                foreach (var file in filePathAttachments)
-                                {
-                                    Attachment at = new Attachment(file);
-                                    myMail.Attachments.Add(at);
-                                }
-
-                            }
-
-                            myMail.From = new MailAddress(fromEmail);
+                        myMail.From = new MailAddress(fromEmail);
+                       
+                        foreach (var address in mailAddresses)
+                        {                            
                             myMail.To.Add(address);
+                        }
 
-                            //add mails cc
-                            foreach (var mCc in _mailsCc)
+                        //prepare file attachment
+                        if (filePathAttachments != null)
+                        {
+                            foreach (var file in filePathAttachments)
                             {
-                                myMail.CC.Add(new MailAddress(mCc));
+                                Attachment at = new Attachment(file);
+                                myMail.Attachments.Add(at);
                             }
 
+                        }
 
-                            myMail.Subject = subject;
-                            myMail.IsBodyHtml = true;
-                            myMail.Body = body;
-                            myMail.IsBodyHtml = true;
-                            using (System.Net.Mail.SmtpClient s = new System.Net.Mail.SmtpClient("mailnew.spclt.com.vn"))
-                            {
-                                s.DeliveryMethod = SmtpDeliveryMethod.Network;
-                                s.UseDefaultCredentials = false;
-                                s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), "UCpYm46k");
-                                s.EnableSsl = true;
+                        //add mails cc
+                        foreach (var mCc in _mailsCc)
+                        {
+                            myMail.CC.Add(new MailAddress(mCc));
+                        }
 
-                                s.Send(myMail);
-                            }
+
+                        myMail.Subject = subject;
+                        myMail.IsBodyHtml = true;
+                        myMail.Body = body;
+                        myMail.IsBodyHtml = true;
+                        using (System.Net.Mail.SmtpClient s = new System.Net.Mail.SmtpClient("mailnew.spclt.com.vn"))
+                        {
+                            s.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            s.UseDefaultCredentials = false;
+                            s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), "UCpYm46k");
+                            s.EnableSsl = true;
+
+                            s.Send(myMail);
                         }
                     }
                     result = 1;
@@ -80,7 +82,7 @@ namespace MailSender.Helpers
                 {
                     result = -1;
                 }
-              
+
 
             });
             return result;
