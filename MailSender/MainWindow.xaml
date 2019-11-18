@@ -11,7 +11,7 @@
         xmlns:vm="clr-namespace:MailSender.ViewModel"
         xmlns:helpers="clr-namespace:MailSender.Helpers"
         mc:Ignorable="d"
-        Title="MailSender v1.0.1" Height="450" Width="800"
+        Title="MailSender v1.0.2" Height="450" Width="800"
         Icon="imgs/send.png"
         >
     <Window.Resources>
@@ -136,6 +136,13 @@
             <TextBox Grid.Row="3" Text="{Binding DocumentXaml,Source={StaticResource vmMainWindow}}" Visibility="Collapsed"  Margin="10,5,10,10"  Background="Gainsboro" TextWrapping="Wrap">
 
             </TextBox>
+            <Grid Grid.Row="3" Background="#084E92">
+                <Button Width="32" Height="32" HorizontalAlignment="Right" Background="{x:Null}"  BorderBrush="{x:Null}" Command="{Binding CmdOpenSettings,Source={StaticResource vmMainWindow}}">
+                    <Image Source="imgs/settings_48x48.png"/>
+                </Button>
+            </Grid>
         </Grid.Children>
+
+        
     </Grid>
 </Window>

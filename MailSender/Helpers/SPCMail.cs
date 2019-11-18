@@ -23,11 +23,11 @@ namespace MailSender.Helpers
         public async Task<int> PrepareSPCMail(string fromEmail, string toAddress, string subject, string body, string mailsCc, string[] filePathAttachments = null)
         {
 
-            string[] mailAddresses = toAddress.Split(';');
+            string[] mailAddresses = toAddress.Replace(',',';').Split(';');
             List<string> _mailsCc = new List<string>();
             if (!string.IsNullOrEmpty(mailsCc))
             {
-                _mailsCc.AddRange(mailsCc.Split(';'));
+                _mailsCc.AddRange(mailsCc.Replace(',',';').Split(';'));
             }
 
             int result = 0;
@@ -41,7 +41,7 @@ namespace MailSender.Helpers
                        
                         foreach (var address in mailAddresses)
                         {                            
-                            myMail.To.Add(address);
+                            myMail.To.Add(address.Trim());
                         }
 
                         //prepare file attachment
@@ -58,7 +58,7 @@ namespace MailSender.Helpers
                         //add mails cc
                         foreach (var mCc in _mailsCc)
                         {
-                            myMail.CC.Add(new MailAddress(mCc));
+                            myMail.CC.Add(new MailAddress(mCc.Trim()));
                         }
 
 
@@ -70,8 +70,9 @@ namespace MailSender.Helpers
                         {
                             s.DeliveryMethod = SmtpDeliveryMethod.Network;
                             s.UseDefaultCredentials = false;
-                            s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), "UCpYm46k");
+                            s.Credentials = new System.Net.NetworkCredential(myMail.From.ToString(), Properties.Settings.Default._hostPassword);
                             s.EnableSsl = true;
+                            //2019-11-18 add: old pass c.H "UCpYm46k"
 
                             s.Send(myMail);
                         }

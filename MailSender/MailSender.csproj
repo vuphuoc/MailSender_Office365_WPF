@@ -117,6 +117,9 @@
     </Compile>
     <Compile Include="Controls\RtbEditor\RichTextboxAssistant.cs" />
     <Compile Include="Converters\FlowDocumentToXamlConverter.cs" />
+    <Compile Include="CustomUC\HostMailConfigUC.xaml.cs">
+      <DependentUpon>HostMailConfigUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\MultiCommandBindingHelper.cs" />
     <Compile Include="Helpers\MultiParamBindingHelper.cs" />
     <Compile Include="Helpers\ObservableObject.cs" />
@@ -138,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RtbEditor\RichTBEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomUC\HostMailConfigUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -255,6 +262,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="imgs\send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\settings_48x48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

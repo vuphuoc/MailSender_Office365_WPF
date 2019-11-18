@@ -46,5 +46,29 @@ namespace MailSender.Properties {
                 this["defaultMailsCc"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string _hostUser {
+            get {
+                return ((string)(this["_hostUser"]));
+            }
+            set {
+                this["_hostUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string _hostPassword {
+            get {
+                return ((string)(this["_hostPassword"]));
+            }
+            set {
+                this["_hostPassword"] = value;
+            }
+        }
     }
 }

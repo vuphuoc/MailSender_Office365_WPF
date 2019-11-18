@@ -1,4 +1,5 @@
-﻿using MailSender.Helpers;
+﻿using MailSender.CustomUC;
+using MailSender.Helpers;
 using MailSender.Model;
 
 using System;
@@ -30,7 +31,7 @@ namespace MailSender.ViewModel
         }
 
         bool allowReset;
-        public bool AllowReset{
+        public bool AllowReset {
             get { return allowReset; }
             set { allowReset = value; OnPropertyChanged("AllowReset"); }
         }
@@ -40,14 +41,14 @@ namespace MailSender.ViewModel
         {
             get { return documentXaml; }
             set {
-                documentXaml = value;             
+                documentXaml = value;
                 OnPropertyChanged("DocumentXaml");
             }
         }
 
         //Email info       
         string mailAddresses;
-       
+
         //[StringLength(50, MinimumLength = 5, ErrorMessage = "Must be at least 5 characters.")]
         //[RegularExpression(@"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",ErrorMessage ="Email is not valid!")]
         public string MailAddresses
@@ -57,7 +58,7 @@ namespace MailSender.ViewModel
             {
                 //ValidateProperty(value, "MailAddresses");
                 //OnPropertyChanged(ref mailAddresses, value);
-                mailAddresses = value;               
+                mailAddresses = value;
                 OnPropertyChanged("MailAddresses");
             }
         }
@@ -73,7 +74,7 @@ namespace MailSender.ViewModel
             }
         }
 
-       
+
         //2019-11-06 Start add: mail Cc
         private string mailCc;
         public string MailCc
@@ -82,7 +83,7 @@ namespace MailSender.ViewModel
             set
             {
                 mailCc = value;
-                OnPropertyChanged(nameof(MailCc));                
+                OnPropertyChanged(nameof(MailCc));
             }
         }
 
@@ -98,6 +99,30 @@ namespace MailSender.ViewModel
             }
         }
         //2019-11-06 End add
+
+        //2019-11-18 Start add: thêm chức năng cho người dùng tự config mail host của mình
+        
+        public string MailHostUser {
+            get { return Properties.Settings.Default._hostUser; }
+            set
+            {
+                Properties.Settings.Default._hostUser = value;
+                Properties.Settings.Default.Save();
+                OnPropertyChanged(nameof(MailHostUser));
+            }
+        }
+
+        public string MailHostPassword
+        {
+            get { return Properties.Settings.Default._hostPassword; }
+            set
+            {
+                Properties.Settings.Default._hostPassword = value;
+                Properties.Settings.Default.Save();
+                OnPropertyChanged(nameof(MailHostPassword));
+            }
+        }
+        //2019-11-18 End add
         #endregion
 
         #region COMMANDS and Event COMMAND
@@ -156,13 +181,13 @@ namespace MailSender.ViewModel
                 var pattern = @"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
                 string mailInfo = values[0] as string;
                 string mailCcInfo = values[1] as string;
-                string[] mails = mailInfo.Split(';');
+                string[] mails = mailInfo.Replace(',',';').Split(';');
                 var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
 
                 //2019-11-06 Start add: thêm mail cc
                 if (!string.IsNullOrEmpty(mailCcInfo))
                 {
-                    string[] mailsCc = mailCcInfo.Split(';');
+                    string[] mailsCc = mailCcInfo.Replace(',',';').Split(';');
                     var invalidMailCc = mailsCc.Any(c => Regex.IsMatch(c, pattern) == false);
                     if (invalidMail || invalidMailCc)
                         return false;
@@ -195,7 +220,7 @@ namespace MailSender.ViewModel
                 message = "Please enter mail addresses and subject!";
             else
             {
-                int result = await SPCMail.Instance.PrepareSPCMail(ConfigurationManager.AppSettings["User"], MailAddresses, MailSubject, DocumentXaml, MailCc, FilesAttachment.Select(f => f.FilePath).ToArray());
+                int result = await SPCMail.Instance.PrepareSPCMail(Properties.Settings.Default._hostUser, MailAddresses, MailSubject, DocumentXaml, MailCc, FilesAttachment.Select(f => f.FilePath).ToArray());
                 if (result == -1)
                     message = "Something went wrong, please check out mail addresses!";
                 else if (result == 1)
@@ -244,6 +269,34 @@ namespace MailSender.ViewModel
             }
             
         }
+
+        //2019-11-18 Start add: thêm command Open Settings để cài đặt tài khoản user Host
+        private ICommand cmdOpenSettings;
+        public ICommand CmdOpenSettings
+        {
+            get
+            {
+                if (cmdOpenSettings == null)
+                    cmdOpenSettings = new RelayCommand<object>(OpenSettings);
+                return cmdOpenSettings;
+            }
+            private set { cmdOpenSettings = value; }
+        }
+
+        private void OpenSettings(object obj)
+        {
+            Window wd = new Window()
+            {
+                Content = new HostMailConfigUC(),
+                Title = "Mail Configuration",
+                Width = 400,
+                Height = 250,                
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            wd.ShowDialog();
+        }
+
+        //2019-11-18 End add
         #endregion
 
         #region FUNCTIONS
@@ -283,6 +336,20 @@ namespace MailSender.ViewModel
             MailAddresses = Properties.Settings.Default.defaultMails;
             //load defaul mails cc
             MailCc = Properties.Settings.Default.defaultMailsCc;
+
+            //kiểm tra nếu settings chưa có config thì hiện form cấu hình thông tin 
+            if(string.IsNullOrEmpty(Properties.Settings.Default._hostUser))
+            {
+                Window wd = new Window()
+                {
+                    Content = new HostMailConfigUC(),
+                    Title = "Mail Configuration",
+                    Width = 400,
+                    Height = 250,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+                wd.ShowDialog();
+            }
             
         }
 
