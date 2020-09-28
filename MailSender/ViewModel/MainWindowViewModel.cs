@@ -75,7 +75,7 @@ namespace MailSender.ViewModel
         }
 
 
-        //2019-11-06 Start add: mail Cc
+       
         private string mailCc;
         public string MailCc
         {
@@ -98,9 +98,9 @@ namespace MailSender.ViewModel
 
             }
         }
-        //2019-11-06 End add
+      
 
-        //2019-11-18 Start add: thêm chức năng cho người dùng tự config mail host của mình
+        
         
         public string MailHostUser {
             get { return Properties.Settings.Default._hostUser; }
@@ -122,11 +122,11 @@ namespace MailSender.ViewModel
                 OnPropertyChanged(nameof(MailHostPassword));
             }
         }
-        //2019-11-18 End add
+       
         #endregion
 
         #region COMMANDS and Event COMMAND
-        ICommand commandAddFileAttachment;//CommandAddFileAttachment
+        ICommand commandAddFileAttachment;
         public ICommand CommandAddFileAttachment
         {
             get {
@@ -139,7 +139,7 @@ namespace MailSender.ViewModel
 
         private void AddFileAttachment(object obj)
         {
-            //FilesAttachment.Add(new FileAttachmentModel() { FileName = "TrackA", FilePath = "D:\trackA.png" });
+          
             using (System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog())
             {
                 if(fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -184,7 +184,7 @@ namespace MailSender.ViewModel
                 string[] mails = mailInfo.Replace(',',';').Split(';');
                 var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
 
-                //2019-11-06 Start add: thêm mail cc
+              
                 if (!string.IsNullOrEmpty(mailCcInfo))
                 {
                     string[] mailsCc = mailCcInfo.Replace(',',';').Split(';');
@@ -200,14 +200,7 @@ namespace MailSender.ViewModel
                     return true;
                 }
 
-                //2019-11-06 End add
-
-                //2019-11-06 Start lock: kiểm tra cả mail được Cc
-                //var invalidMail = mails.Any(c => Regex.IsMatch(c, pattern) == false);
-                //if (invalidMail)
-                //    return false;
-                //return true;
-                //2019-11-06 End lock
+               
             }
             else
                 return false;
@@ -270,7 +263,7 @@ namespace MailSender.ViewModel
             
         }
 
-        //2019-11-18 Start add: thêm command Open Settings để cài đặt tài khoản user Host
+        
         private ICommand cmdOpenSettings;
         public ICommand CmdOpenSettings
         {
@@ -296,7 +289,7 @@ namespace MailSender.ViewModel
             wd.ShowDialog();
         }
 
-        //2019-11-18 End add
+   
         #endregion
 
         #region FUNCTIONS
@@ -332,12 +325,12 @@ namespace MailSender.ViewModel
             //PrepareData();
             AllowReset = false;
 
-            //load default mails 
+        
             MailAddresses = Properties.Settings.Default.defaultMails;
-            //load defaul mails cc
+        
             MailCc = Properties.Settings.Default.defaultMailsCc;
 
-            //kiểm tra nếu settings chưa có config thì hiện form cấu hình thông tin 
+          
             if(string.IsNullOrEmpty(Properties.Settings.Default._hostUser))
             {
                 Window wd = new Window()
